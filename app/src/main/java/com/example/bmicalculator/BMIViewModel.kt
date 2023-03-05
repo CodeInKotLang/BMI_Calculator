@@ -1,5 +1,7 @@
 package com.example.bmicalculator
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,8 +14,8 @@ class BMIViewModel : ViewModel() {
 
     fun onAction(userAction: UserAction) {
         when (userAction) {
-            UserAction.OnGoButtonClicked -> {
-                calculateBMI()
+            is UserAction.OnGoButtonClicked -> {
+                calculateBMI(userAction.context)
             }
             UserAction.OnHeightValueClicked -> {
                 state = state.copy(
@@ -52,7 +54,7 @@ class BMIViewModel : ViewModel() {
         }
     }
 
-    private fun calculateBMI() {
+    private fun calculateBMI(context: Context) {
         val weightInKgs: Double = when(state.weightUnit) {
             "Pounds" -> state.weightValue.toDouble().times(0.4536)
             else -> state.weightValue.toDouble()
@@ -78,7 +80,11 @@ class BMIViewModel : ViewModel() {
                 bmiStage = bmiStage
             )
         } catch (e: Exception) {
-            state = state.copy(error = e.message)
+            Toast.makeText(
+                context,
+                "This BMI does not look good, check again the height and weight value",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -192,7 +198,7 @@ sealed class UserAction {
     object OnHeightValueClicked : UserAction()
     object OnWeightTextClicked : UserAction()
     object OnHeightTextClicked : UserAction()
-    object OnGoButtonClicked : UserAction()
+    data class OnGoButtonClicked(val context: Context) : UserAction()
     data class OnNumberClicked(val number: String) : UserAction()
     object OnAllClearButtonClicked : UserAction()
     object OnDeleteButtonClicked : UserAction()

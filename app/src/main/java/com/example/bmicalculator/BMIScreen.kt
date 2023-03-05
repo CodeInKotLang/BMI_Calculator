@@ -1,14 +1,12 @@
 package com.example.bmicalculator
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,16 +46,6 @@ fun BMIScreen(
         skipHalfExpanded = true
     )
 
-    LaunchedEffect(key1 = state.error) {
-        if (state.error != null) {
-            Toast.makeText(
-                context,
-                "This BMI does not look good, check again the height and weight value",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
     ModalBottomSheetLayout(
         sheetState = modalBottomSheet,
         sheetContent = {
@@ -93,7 +81,7 @@ fun BMIScreen(
                     viewModel.onAction(UserAction.OnWeightValueClicked)
                 },
                 onGoButtonClicked = {
-                    viewModel.onAction(UserAction.OnGoButtonClicked)
+                    viewModel.onAction(UserAction.OnGoButtonClicked(context = context))
                 },
                 onNumberClicked = {
                     viewModel.onAction(UserAction.OnNumberClicked(number = it))
